@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .converter-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            min-height: 20px;
+        }
+        
+        .swap-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .swap-btn:hover {
+            background-color: #357ab8;
+        }
+        
+        .swap-btn i {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter-container">
+        <h1>Temperature Converter</h1>
+        
+        <div class="input-group">
+            <label for="temperature">Temperature Value</label>
+            <input type="number" id="temperature" placeholder="Enter temperature" oninput="convertTemperature()">
+        </div>
+        
+        <div class="input-group">
+            <label for="from-unit">From Unit</label>
+            <select id="from-unit" onchange="convertTemperature()">
+                <option value="celsius">Celsius (°C)</option>
+                <option value="fahrenheit">Fahrenheit (°F)</option>
+                <option value="kelvin">Kelvin (K)</option>
+            </select>
+        </div>
+        
+        <button class="swap-btn" onclick="swapUnits()">
+            <i>⇅</i> Swap Units
+        </button>
+        
+        <div class="input-group">
+            <label for="to-unit">To Unit</label>
+            <select id="to-unit" onchange="convertTemperature()">
+                <option value="fahrenheit">Fahrenheit (°F)</option>
+                <option value="celsius">Celsius (°C)</option>
+                <option value="kelvin">Kelvin (K)</option>
+            </select>
+        </div>
+        
+        <div class="result" id="result">
+            Result will appear here
+        </div>
+    </div>
+
+    <script>
+        function convertTemperature() {
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const fromUnit = document.getElementById('from-unit').value;
+            const toUnit = document.getElementById('to-unit').value;
+            const resultElement = document.getElementById('result');
+            
+            if (isNaN(temperature)) {
+                resultElement.textContent = 'Please enter a valid number';
+                return;
+            }
+            
+            let result;
+            
+            // Convert to Celsius first
+            let celsius;
+            switch (fromUnit) {
+                case 'celsius':
+                    celsius = temperature;
+                    break;
+                case 'fahrenheit':
+                    celsius = (temperature - 32) * 5/9;
+                    break;
+                case 'kelvin':
+                    celsius = temperature - 273.15;
+                    break;
+            }
+            
+            // Convert from Celsius to target unit
+            switch (toUnit) {
+                case 'celsius':
+                    result = celsius;
+                    break;
+                case 'fahrenheit':
+                    result = (celsius * 9/5) + 32;
+                    break;
+                case 'kelvin':
+                    result = celsius + 273.15;
+                    break;
+            }
+            
+            // Round to 2 decimal places
+            result = Math.round(result * 100) / 100;
+            
+            // Get unit symbols
+            const unitSymbols = {
+                celsius: '°C',
+                fahrenheit: '°F',
+                kelvin: 'K'
+            };
+            
+            resultElement.textContent = `${temperature}${unitSymbols[fromUnit]} = ${result}${unitSymbols[toUnit]}`;
+        }
+        
+        function swapUnits() {
+            const fromUnit = document.getElementById('from-unit');
+            const toUnit = document.getElementById('to-unit');
+            
+            const temp = fromUnit.value;
+            fromUnit.value = toUnit.value;
+            toUnit.value = temp;
+            
+            convertTemperature();
+        }
+        
+        // Initialize conversion on page load
+        document.addEventListener('DOMContentLoaded', convertTemperature);
+    </script>
+</body>
+</html>
